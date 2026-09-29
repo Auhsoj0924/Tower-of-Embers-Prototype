@@ -1,0 +1,144 @@
+<!doctype html>
+<html lang="ko">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="theme-color" content="#10172d">
+  <title>불의 마탑 · Torch Prototype</title>
+  <link rel="stylesheet" href="./styles.css">
+</head>
+<body>
+  <div class="app-shell">
+    <div class="ambient-glow ambient-glow--one"></div>
+    <div class="ambient-glow ambient-glow--two"></div>
+
+    <main id="titleScreen" class="screen title-screen" aria-labelledby="titleHeading">
+      <div class="title-mark" aria-hidden="true">
+        <span class="rune rune--top">✦</span>
+        <span class="rune rune--left">·</span>
+        <span class="rune rune--right">·</span>
+        <div class="sigil sigil--outer"></div>
+        <div class="sigil sigil--inner"></div>
+        <div class="sigil-flame"><span></span></div>
+      </div>
+      <p class="eyebrow">THE TOWER OF EMBERS · PROTOTYPE 0.1</p>
+      <h1 id="titleHeading">불의 <em>마탑</em></h1>
+      <p class="title-subtitle">가장 작은 불꽃에서, 가장 높은 서클까지.</p>
+      <div class="title-card">
+        <p class="title-card__label">탑주의 첫 번째 필사</p>
+        <p>양피지 위에 마법진을 그리고, 당신의 마탑을 움직일 첫 골드를 벌어 보세요.</p>
+      </div>
+      <button id="startButton" class="button button--primary button--large" type="button">
+        <span>마탑에 입장하기</span>
+        <span class="button__arrow" aria-hidden="true">↗</span>
+      </button>
+      <p class="title-hint">마우스 또는 터치로 마법진을 따라 그릴 수 있습니다.</p>
+    </main>
+
+    <main id="gameScreen" class="screen game-screen" hidden aria-labelledby="gameHeading">
+      <header class="topbar">
+        <button id="backButton" class="brand-button" type="button" aria-label="타이틀 화면으로 돌아가기">
+          <span class="brand-button__sigil" aria-hidden="true">✦</span>
+          <span>
+            <strong>불의 마탑</strong>
+            <small>THE TOWER OF EMBERS</small>
+          </span>
+        </button>
+        <div class="topbar__status">
+          <span class="status-label">탑주의 보유 골드</span>
+          <span id="goldValue" class="gold-value">0</span>
+          <span class="gold-symbol" aria-hidden="true">✦</span>
+        </div>
+      </header>
+
+      <section class="game-layout">
+        <div class="workbench">
+          <div class="workbench__heading">
+            <div>
+              <p class="eyebrow eyebrow--light">생활 마법 · 0서클</p>
+              <h2 id="gameHeading">Torch</h2>
+              <p class="spell-description">현대의 휴대용 라이터 정도의 작은 화염을 만드는 생활 마법서</p>
+            </div>
+            <div class="timer" aria-label="제작 제한 시간">
+              <div class="timer__ring"><span id="timerValue">5.0</span><small>SEC</small></div>
+            </div>
+          </div>
+
+          <div class="parchment-card">
+            <div class="parchment-card__topline">
+              <span>필사 원본 · TORCH / 00</span>
+              <span id="drawState">준비</span>
+            </div>
+            <div class="canvas-wrap">
+              <canvas id="drawingCanvas" width="720" height="460" aria-label="Torch 마법진을 그리는 영역"></canvas>
+              <div id="canvasMessage" class="canvas-message">
+                <span class="canvas-message__icon">✦</span>
+                <span>회색 선을 따라<br>물방울을 완성하세요</span>
+              </div>
+            </div>
+            <div class="parchment-card__footer">
+              <span><i class="legend-dot legend-dot--guide"></i>기준 마법진</span>
+              <span><i class="legend-dot legend-dot--ink"></i>탑주의 필사</span>
+              <span class="parchment-card__tip">선을 적게 벗어날수록 높은 품질</span>
+            </div>
+          </div>
+
+          <div class="workbench__actions">
+            <button id="resetButton" class="button button--secondary" type="button">다시 그리기</button>
+            <button id="cancelButton" class="button button--ghost" type="button">작업 취소</button>
+          </div>
+        </div>
+
+        <aside class="side-panel">
+          <div class="side-panel__intro">
+            <span class="side-panel__icon" aria-hidden="true">✎</span>
+            <div>
+              <p class="eyebrow">CURRENT COMMISSION</p>
+              <h3>첫 번째 주문</h3>
+            </div>
+          </div>
+
+          <div class="instruction-card">
+            <p class="instruction-card__title">제작 방법</p>
+            <ol>
+              <li><span>01</span> 꼭짓점에서 드래그를 시작하세요.</li>
+              <li><span>02</span> 회색 물방울 선을 따라 그리세요.</li>
+              <li><span>03</span> 5초 안에 다시 꼭짓점으로 돌아오세요.</li>
+            </ol>
+          </div>
+
+          <div class="quality-card">
+            <div class="quality-card__header">
+              <span>현재 필사 품질</span>
+              <span id="qualityLabel" class="quality-label quality-label--ready">대기 중</span>
+            </div>
+            <div class="quality-meter"><span id="qualityMeterFill"></span></div>
+            <div class="quality-card__stats">
+              <span>정확도 <strong id="accuracyValue">—</strong></span>
+              <span>속도 <strong id="speedValue">—</strong></span>
+            </div>
+          </div>
+
+          <div id="resultCard" class="result-card" hidden>
+            <div class="result-card__flame" aria-hidden="true"><span></span></div>
+            <p class="eyebrow">CRAFTING COMPLETE</p>
+            <h3 id="resultTitle">Torch 제작 완료</h3>
+            <p id="resultMessage">양피지에 작은 불꽃이 깃들었습니다.</p>
+            <div class="result-card__reward">
+              <span>판매 수익</span>
+              <strong><span id="rewardValue">0</span> <small>GOLD</small></strong>
+            </div>
+            <button id="nextButton" class="button button--primary button--full" type="button">다음 Torch 제작</button>
+          </div>
+
+          <div class="side-panel__note">
+            <span class="note-mark">✦</span>
+            <p>생활 마법은 정확도와 속도만으로 판정됩니다. 더 높은 서클에서는 새로운 필사 규칙이 추가됩니다.</p>
+          </div>
+        </aside>
+      </section>
+    </main>
+  </div>
+  <script src="./app.js"></script>
+</body>
+</html>
